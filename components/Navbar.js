@@ -1,7 +1,31 @@
-import React from "react";
-import { Icon } from "@iconify/react";
+import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import NavIcons from "./NavIcons";
+import { Icon } from "@iconify/react";
+
 function Navbar() {
+  const icons = [
+    "gg:menu-grid-o",
+    "jam:messages-f",
+    "solar:bell-bold",
+    "solar:bell-bold",
+  ];
+
+  const [clickedStates, setClickedStates] = useState(icons.map(() => false));
+
+  const checking = (id) => {
+    var arr = [];
+    clickedStates.map((check, index) => {
+      if (index === id) {
+        return (arr[index] = !check);
+      } else {
+        return (arr[index] = false);
+      }
+    });
+    setClickedStates(arr);
+    console.log(clickedStates);
+  };
+
   return (
     <nav className=" sticky top-0 h-14 bg-[#FFFFFF]  shadow-md">
       <div className="flex items-center justify-between">
@@ -17,18 +41,14 @@ function Navbar() {
           </div>
         </div>
         <div className="flex space-x-2 px-2">
-          <div className="bg-[#E4E7EA] rounded-full p-[6px]">
-            <Icon icon="gg:menu-grid-o" className="text-[30px] " />
-          </div>
-          <div className="bg-[#E4E7EA] rounded-full p-[6px]">
-            <Icon icon="jam:messages-f" className="text-[30px] " />
-          </div>
-          <div className="bg-[#E4E7EA] rounded-full p-[6px]">
-            <Icon icon="solar:bell-bold" className="text-[30px] " />
-          </div>
-          <div className="bg-[#E4E7EA] rounded-full p-[6px]">
-            <Icon icon="solar:bell-bold" className="text-[30px] " />
-          </div>
+          {icons.map((icon, index) => (
+            <NavIcons
+              key={index}
+              clicked={clickedStates[index]}
+              icon={icon}
+              onClick={() => checking(index)}
+            />
+          ))}
         </div>
       </div>
     </nav>
