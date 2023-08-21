@@ -1,19 +1,17 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 
-function NavIcons({ icon, clicked, onClick }) {
+function NavIcons({ icon, id }) {
   //   console.log(`${clicked} 12`);
   return (
-    <div
-      onClick={onClick}
-      className={`${
-        clicked && "text-[#1876F1] bg-[#E6F3FF]"
-      } rounded-full bg-[#E4E7EA] p-[6px] cursor-pointer active:scale-95`}
+    <button
+      // onClick={onClick}
+      onClick={() => console.log(id)}
+      className={` focus:text-[#1876F1] focus-visible:ring-[#1876F1] focus-visible:ring-2 focus-visible:ring-offset-2    outline-none rounded-full bg-[#E4E7EA] p-[6px] cursor-pointer active:scale-95`}
     >
       <Icon icon={icon} className="text-[30px] " />
-    </div>
+    </button>
   );
 }
 
 export default NavIcons;
-// "bg-[#1876F1]" : "bg-[#E4E7EA]"
