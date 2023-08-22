@@ -27,18 +27,15 @@ function Navbar() {
   // };
 
   return (
-    <nav className=" sticky top-0 h-14  bg-[#FFFFFF] mx-auto shadow-md">
+    <nav className=" sticky top-0 h-14  bg-[#FFFFFF]  mx-auto shadow-md">
       <div className="flex items-center justify-between">
         <div className="py-2 px-4 flex">
           <Link
             href="/"
             className="focus-visible:ring-[#1876F1] focus-visible:ring-2 focus-visible:ring-offset-2   rounded-full outline-none"
           >
-            <img
-              src="/facebook.png"
-              className="w-10 h-10 rounded-full"
-              alt=""
-            />
+            <img src="favicon.ico" className="w-10 h-10 rounded-full" alt="" />
+            {/* <Icon icon={"solar:bell-bold"} className="text-[30px] " /> */}
           </Link>
           <div className=" bg-[#F0F3F4]  ml-2 flex items-center rounded-full w-9 sm:w-[240px] p-1  relative">
             <MagnifyingGlassIcon className="h-[18px] ml-1 font-bold  z-50 text-[#3e3f41]" />

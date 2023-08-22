@@ -7,7 +7,7 @@ function Sidebar() {
 
   // console.log(state);
   return (
-    <div className=" sm:flex flex-col lg:min-w-[360px]  overflow-y-auto max-h-[100vh] py-2  fixed pb-20 ">
+    <div className=" flex flex-col lg:min-w-[360px]  overflow-y-auto max-h-[100vh] py-2  fixed pb-20 ">
       <SidebarLink
         icon={"fa-solid:user-friends"}
         text="Username"
