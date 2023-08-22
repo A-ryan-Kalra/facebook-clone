@@ -12,7 +12,9 @@ function SidebarLink({ icon, color, state, text }) {
         <Icon
           icon={icon}
           style={{ color: color }}
-          className={`h-10 w-10 p-1   `}
+          // width={40}
+          // height={40}
+          className={`p-1 w-10 h-10 `}
         />
         <span className=" hidden lg:inline ml-2">{text}</span>
       </div>

@@ -27,7 +27,7 @@ function Navbar() {
   // };
 
   return (
-    <nav className=" sticky top-0 h-14  bg-[#FFFFFF]  w-[1523px] mx-auto shadow-md">
+    <nav className=" sticky top-0 h-14  bg-[#FFFFFF] mx-auto shadow-md">
       <div className="flex items-center justify-between">
         <div className="py-2 px-4 flex">
           <Link

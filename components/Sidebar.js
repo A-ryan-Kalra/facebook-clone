@@ -7,7 +7,7 @@ function Sidebar() {
 
   // console.log(state);
   return (
-    <div className="  sm:flex flex-col lg:min-w-[360px]  overflow-y-auto sm:max-h-[100vh] py-2  fixed pb-20 ">
+    <div className=" sm:flex flex-col lg:min-w-[360px]  overflow-y-auto max-h-[100vh] py-2  fixed pb-20 ">
       <SidebarLink
         icon={"fa-solid:user-friends"}
         text="Username"
@@ -93,7 +93,7 @@ function Sidebar() {
         text="Messanger"
         color={"#C462D0"}
       />
-
+      <hr className="border-gray-300 pb-1 w-[94%] mr-1 ml-auto" />
       <div
         className="flex items-center hover:bg-gray-500 focus-visible:ring-[#1876F1] focus-visible:ring-2 focus-visible:ring-offset-2    hover:bg-opacity-20 cursor-pointer rounded-lg px-2 ml-2 py-2 outline-none"
         tabIndex={0}
