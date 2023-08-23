@@ -16,6 +16,8 @@ function Input() {
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
     }
+    console.log(e.target.files[0]);
+
     reader.onload = (readerEvent) => {
       setSelectedFile(readerEvent.target.result);
     };
@@ -33,7 +35,6 @@ function Input() {
   function addEmoji(e) {
     setInput(input + e.emoji);
   }
-
   return (
     <div className=" mt-1 shadow-lg rounded-lg border-2 bg-[#FEFEFF] ">
       <div className="flex flex-col mx-auto w-11/12">
@@ -48,6 +49,8 @@ function Input() {
               type="text"
               placeholder="What's on your mind?"
               onClick={inputFunc}
+              onChange={() => {}}
+              value={input}
               className="w-full min-h-[40px] rounded-full bg-gray-200/60 hover:bg-gray-300/60 p-2 placeholder-[#696A6E] cursor-pointer"
               id=""
             />
@@ -61,7 +64,7 @@ function Input() {
                 }}
               >
                 <div
-                  className="relative w-[350px] lg:w-[500px] rounded-lg h-[430px] top-[50%] mx-auto z-50 translate-y-[-50%] bg-[#FEFFFE] shadow-lg  "
+                  className="relative w-[350px] lg:w-[500px] rounded-lg   top-[50%] mx-auto z-50 translate-y-[-50%] bg-[#FEFFFE] shadow-lg  "
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowEmojis(false);
@@ -102,18 +105,28 @@ function Input() {
                   </div>
                   <div className="flex-col flex px-1">
                     <textarea
-                      className="p-3 min-h-[128px] placeholder:text-2xl placeholder:text-[#65676B] outline-none  text-2xl  max-h-[129px] overflow-auto"
+                      className={`p-3 placeholder:text-2xl placeholder:text-[#65676B] outline-none  text-2xl  ${
+                        selectedFile
+                          ? "max-h-[70px] min-h-[58px] "
+                          : "max-h-[129px] min-h-[128px] "
+                      } overflow-auto `}
                       placeholder="What's on your mind?"
                       ref={textInputRef}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                     ></textarea>
-                    {!selectedFile && (
+                    {selectedFile && (
                       <div>
-                        <div className="overflow-y-scroll max-h-40 ">
+                        <div className="relative overflow-y-scroll max-h-[230px] ">
+                          <div
+                            className="absolute right-1 top-5 rounded-full p-1 cursor-pointer bg-gray-300 "
+                            onClick={() => setSelectedFile(null)}
+                          >
+                            <XMarkIcon className="h-7   " />
+                          </div>
                           <img
                             src={selectedFile}
-                            className=" overflow-hidden object-cover "
+                            className="mt-4 overflow-hidden object-cover "
                             alt=""
                           />
                         </div>
@@ -195,7 +208,7 @@ function Input() {
                       </div>
                     </div>
                     <button
-                      className="bg-[#1B74E4] text-[#FEFFFE] h-9 rounded-lg font-semibold m-2 hover:bg-[#1A6FD8] disabled:cursor-not-allowed disabled:bg-[#E5E6EA]"
+                      className="bg-[#1B74E4] text-[#FEFFFE] h-9 rounded-lg font-semibold m-2 hover:bg-[#1A6FD8] disabled:cursor-not-allowed disabled:bg-[#E5E6EA] mb-4"
                       disabled={!selectedFile && !input.trim()}
                     >
                       Post
@@ -218,7 +231,12 @@ function Input() {
           </div>
           <div
             className="flex justify-center items-center  cursor-pointer w-full p-2 rounded-lg  hover:bg-gray-400/20 space-x-2"
-            onClick={() => filePickerRef.current.click()}
+            onClick={
+              // filePickerRef.current.click();
+              // setTimeout(() => {
+              inputFunc
+              // }, 100);
+            }
           >
             <Icon
               icon="fa-solid:photo-video"
@@ -228,6 +246,7 @@ function Input() {
               type="file"
               onChange={(e) => addImageToPost(e)}
               hidden
+              value={""}
               ref={filePickerRef}
             />
             <span className="text-sm font-bold text-[#65666A] ">
