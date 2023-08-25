@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Picker from "emoji-picker-react";
+import { db, storage } from "../firebaseConfig";
 
 function Input() {
   const filePickerRef = useRef(null);
@@ -16,7 +17,7 @@ function Input() {
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
     }
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
 
     reader.onload = (readerEvent) => {
       setSelectedFile(readerEvent.target.result);
