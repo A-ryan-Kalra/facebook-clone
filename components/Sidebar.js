@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import SidebarLink from "./SidebarLink";
 import { Icon } from "@iconify/react";
+import { sessionState } from "../atoms/modalAtoms";
+import { useRecoilState } from "recoil";
 
 function Sidebar() {
   const [state, setState] = useState(true);
-
-  // console.log(state);
+  const [session, setSession] = useRecoilState(sessionState);
+  // console.log(session);
   return (
     <div className=" flex flex-col lg:min-w-[360px]  overflow-y-auto max-h-[100vh] py-2  fixed pb-20 ">
-      <SidebarLink
-        icon={"fa-solid:user-friends"}
-        text="Username"
-        color="#68D7C7"
-      />
+      <div className={` w-full`}>
+        <div
+          tabIndex={0}
+          className={`flex items-center focus-visible:ring-[#1876F1] focus-visible:ring-2 focus-visible:ring-offset-2  outline-none hover:bg-gray-500   hover:bg-opacity-20 cursor-pointer rounded-l-lg px-2 ml-2 py-2  `}
+        >
+          <img
+            src={session.photoURL ? session?.photoURL : "/facebook.png"}
+            className={`p-1 -ml-1 w-11 h-11 rounded-full`}
+          />
+          <span className=" hidden lg:inline ml-1">
+            {session.displayName ? session.displayName : session.email}
+          </span>
+        </div>
+      </div>
       <SidebarLink
         icon={"fa-solid:user-friends"}
         text="Freinds"

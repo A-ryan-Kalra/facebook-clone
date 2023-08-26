@@ -3,6 +3,16 @@ import { Icon } from "@iconify/react";
 import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Picker from "emoji-picker-react";
 import { db, storage } from "../firebaseConfig";
+import { useRecoilState } from "recoil";
+import { sessionState } from "../atoms/modalAtoms";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 function Input() {
   const filePickerRef = useRef(null);
@@ -11,6 +21,36 @@ function Input() {
   const textInputRef = useRef();
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState("");
+  const [session, setSession] = useRecoilState(sessionState);
+  // console.log(selectedFile);
+
+  const sendPost = async () => {
+    const docRef = await addDoc(collection(db, "posts"), {
+      id: session?.apiKey,
+      username: session?.displayName,
+      email: session?.email,
+      userimage: session.photoURL,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
+    // console.log(docRef);
+    const imageRef = ref(storage, `posts/${docRef.id}/image`);
+    if (selectedFile) {
+      await uploadString(imageRef, selectedFile, "data_url").then(
+        async (response) => {
+          const downloadUrl = await getDownloadURL(imageRef);
+          await updateDoc(doc(db, "posts", docRef.id), {
+            img: downloadUrl,
+          });
+        }
+      );
+    }
+    setInput("");
+    setSelectedFile(null);
+    setShowEmojis(null);
+    setTakeInput(false);
+    document.body.style.overflow = "auto";
+  };
 
   const addImageToPost = (e) => {
     const reader = new FileReader();
@@ -23,7 +63,6 @@ function Input() {
       setSelectedFile(readerEvent.target.result);
     };
   };
-
   const inputFunc = () => {
     setTakeInput(true);
     document.body.style.overflow = "hidden";
@@ -41,8 +80,8 @@ function Input() {
       <div className="flex flex-col mx-auto w-11/12">
         <div className=" flex items-center w-full   justify-start border-b border-gray-300  py-3">
           <img
-            src="/facebook.png"
-            className="w-10 h-10 cursor-pointer"
+            src={` ${session.photoURL ? session?.photoURL : "/facebook.png"}`}
+            className="w-10 h-10 cursor-pointer rounded-full"
             alt=""
           />
           <div className="flex items-center w-11/12 ml-2 rounded-full">
@@ -85,12 +124,18 @@ function Input() {
                   </div>
                   <div className="flex items-center space-x-3 px-2 py-2 ">
                     <img
-                      src="/favicon.ico"
+                      src={` ${
+                        session.photoURL ? session?.photoURL : "/facebook.png"
+                      }`}
                       className="cursor-pointer  hover:opacity-80   rounded-full ml-2 mt-2 h-10 w-10"
                       alt=""
                     />
                     <span className="flex-col flex mt-1 space-y-1 ">
-                      <span className="text-sm font-bold">Username</span>
+                      <span className="text-sm font-bold">
+                        {session.displayName
+                          ? session?.displayName
+                          : session?.email}
+                      </span>
                       <span className="h-[22px] flex items-center  cursor-pointer justify-between p-1 w-20 rounded-md bg-[#E5E6EA]">
                         <Icon
                           icon="fa-solid:globe-americas"
@@ -117,20 +162,18 @@ function Input() {
                       onChange={(e) => setInput(e.target.value)}
                     ></textarea>
                     {selectedFile && (
-                      <div>
-                        <div className="relative overflow-y-scroll max-h-[230px] ">
-                          <div
-                            className="absolute right-1 top-5 rounded-full p-1 cursor-pointer bg-gray-300 "
-                            onClick={() => setSelectedFile(null)}
-                          >
-                            <XMarkIcon className="h-7   " />
-                          </div>
-                          <img
-                            src={selectedFile}
-                            className="mt-4 overflow-hidden object-cover "
-                            alt=""
-                          />
+                      <div className="relative overflow-y-scroll max-h-[230px] border-2 rounded-lg m-2 p-2">
+                        <div
+                          className="absolute right-1 top-5 rounded-full p-1 cursor-pointer bg-gray-300 "
+                          onClick={() => setSelectedFile(null)}
+                        >
+                          <XMarkIcon className="h-7   " />
                         </div>
+                        <img
+                          src={selectedFile}
+                          className="mt-4  object-cover "
+                          alt=""
+                        />
                       </div>
                     )}
                     <div className="flex p-1 px-2 items-center justify-between">
@@ -144,7 +187,7 @@ function Input() {
                       />
                       {showEmojis && (
                         <div
-                          className={`left-[10px] absolute lg:top-[-100px] top-[288px] lg:left-[400px] `}
+                          className={`left-[10px] absolute lg:top-[140px] top-[288px] lg:left-[500px] `}
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Picker
@@ -211,6 +254,7 @@ function Input() {
                     <button
                       className="bg-[#1B74E4] text-[#FEFFFE] h-9 rounded-lg font-semibold m-2 hover:bg-[#1A6FD8] disabled:cursor-not-allowed disabled:bg-[#E5E6EA] mb-4"
                       disabled={!selectedFile && !input.trim()}
+                      onClick={sendPost}
                     >
                       Post
                     </button>

@@ -3,18 +3,29 @@ import Head from "next/head";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Feed from "../../components/Feed";
-import { useState } from "react";
-import Login from "../../components/Login";
+import { useEffect, useState } from "react";
+import Login from "./login";
+import { sessionState } from "../../atoms/modalAtoms";
+import { useRecoilState } from "recoil";
 
 export default function Home() {
-  const [session, setSession] = useState(false);
+  const [session, setSession] = useRecoilState(sessionState);
+  let token;
+
+  useEffect(() => {
+    token = JSON.parse(sessionStorage.getItem("Token"));
+    // console.log(token);
+    if (!token) {
+      <Login />;
+    }
+  }, []);
 
   return (
     <div>
       <Head>
         <title>Facebook-Clone</title>
       </Head>
-      {!session ? (
+      {session.length === 0 ? (
         <Login />
       ) : (
         <main>
