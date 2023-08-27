@@ -7,16 +7,16 @@ import { Icon } from "@iconify/react";
 function Post({ post }) {
   //   const [session, setSession] = useRecoilState(sessionState);
 
-  console.log(post);
+  //   console.log(post);
   return (
     <div className="flex-col flex bg-[#FEFEFF] shadow-lg rounded-lg overflow-hidden my-2 ">
       <div className="flex justify-between items-center">
         <div className="flex p-3">
-          <img src={post.userimage} className="h-11 rounded-full" alt="" />
+          <img src={post?.userimage} className="h-11 rounded-full" alt="" />
 
           <div className="flex-col flex ml-2 -mt-[1px]  ">
             <span className="hover:underline cursor-pointer inline-block -mb-[3px] font-semibold">
-              {post.username}
+              {post?.username}
             </span>
             <div className="flex items-center  gap-1 text-[#757578]">
               <Moment
@@ -43,9 +43,9 @@ function Post({ post }) {
         </div>
       </div>
       <div>
-        <p className="px-3  -mt-1 py-2">{post.text}</p>
+        <p className="px-3  -mt-1 py-2">{post?.text}</p>
         <img
-          src={post.img}
+          src={post?.img}
           className="max-h-[400px]  w-full object-cover"
           alt=""
         />
