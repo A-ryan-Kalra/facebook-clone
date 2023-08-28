@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { postState, sessionState } from "../atoms/modalAtoms";
 import Moment from "react-moment";
@@ -8,6 +8,11 @@ function Post({ post }) {
   //   const [session, setSession] = useRecoilState(sessionState);
 
   //   console.log(post);
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [deleted, setDeleted] = useState(false);
+
   return (
     <div className="flex-col flex bg-[#FEFEFF] shadow-lg rounded-lg overflow-hidden my-2 ">
       <div className="flex justify-between items-center">
@@ -49,6 +54,63 @@ function Post({ post }) {
           className="max-h-[400px]  w-full object-cover"
           alt=""
         />
+      </div>
+      <div className="p-2 flex items-center justify-between">
+        <div className="flex  items-center icon">
+          <div
+            onClick={() => setLiked(!liked)}
+            className="px-2 cursor-pointer active:scale-90   active:skew-x-12"
+          >
+            {liked ? (
+              <Icon
+                icon="solar:chat-round-like-bold"
+                className="text-[#0F87EB]"
+                height={25}
+              />
+            ) : (
+              <Icon
+                icon="solar:chat-round-like-linear"
+                className="text-[#0F87EB]"
+                height={25}
+              />
+            )}
+          </div>
+          {!likes.length > 0 && (
+            <div className=" text-[#65666A] hover:underline cursor-pointer">
+              {comments.length}
+            </div>
+          )}
+        </div>
+        <div
+          className="cursor-pointer p-1 hover:bg-[#EA4947] hover:bg-opacity-30 rounded-full "
+          onClick={() => setDeleted(!deleted)}
+        >
+          {deleted ? (
+            <Icon
+              icon="mdi:delete-empty"
+              height={25}
+              className=" text-[#EA4947] rounded-full "
+            />
+          ) : (
+            <Icon
+              icon="mdi:delete-empty-outline"
+              height={25}
+              className="  rounded-full "
+            />
+          )}
+        </div>
+        <div className="flex items-center icon">
+          <Icon
+            icon="mingcute:comment-fill"
+            className="text-[#0F87EB]"
+            height={25}
+          />
+          {!comments.length > 0 && (
+            <div className="px-2 text-[#65666A] hover:underline cursor-pointer">
+              {comments.length}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

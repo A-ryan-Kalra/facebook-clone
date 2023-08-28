@@ -12,13 +12,13 @@ export default function Home() {
   const [session, setSession] = useRecoilState(sessionState);
   let token;
 
-  useEffect(() => {
-    token = JSON.parse(sessionStorage.getItem("Token"));
-    // console.log(token);
-    if (!token) {
-      <Login />;
-    }
-  }, []);
+  // useEffect(() => {
+  //   token = JSON.parse(sessionStorage.getItem("Token"));
+  //   // console.log(token);
+  //   if (!token) {
+  //     <Login />;
+  //   }
+  // }, []);
 
   return (
     <div>
