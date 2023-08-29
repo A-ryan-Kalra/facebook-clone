@@ -1,29 +1,71 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { postState, sessionState } from "../atoms/modalAtoms";
+import { sessionState, postState, postStateId } from "../atoms/modalAtoms";
 import Moment from "react-moment";
 import { Icon } from "@iconify/react";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import PostState from "./PostState";
 
-function Post({ post }) {
-  //   const [session, setSession] = useRecoilState(sessionState);
+function Post({ post, id }) {
+  const [session, setSession] = useRecoilState(sessionState);
 
-  //   console.log(post);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
   const [deleted, setDeleted] = useState(false);
+  const [postStated, setPostStated] = useRecoilState(postState);
+  const [key, setKey] = useRecoilState(postState);
+  const [keyId, setKeyId] = useRecoilState(postStateId);
+  useEffect(
+    () =>
+      onSnapshot(collection(db, "posts", id, "likes"), (snapshot) => {
+        setLikes(snapshot.docs);
+        // console.log(likes);
+      }),
+    [db, id]
+  );
+  // console.log(likes.length);
 
+  useEffect(
+    () => setLiked(likes.findIndex((like) => like.id === session.uid) !== -1),
+    [likes]
+  );
+  // console.log(liked);
+  async function likePost() {
+    if (liked) {
+      await deleteDoc(doc(db, "posts", id, "likes", session.uid));
+    } else {
+      await setDoc(doc(db, "posts", id, "likes", session.uid), {
+        username: session.displayName,
+        usermail: session.email,
+      });
+    }
+  }
   return (
     <div className="flex-col flex bg-[#FEFEFF] shadow-lg rounded-lg overflow-hidden my-2 ">
       <div className="flex justify-between items-center">
         <div className="flex p-3">
-          <img src={post?.userimage} className="h-11 rounded-full" alt="" />
+          <img
+            src={post?.userimage}
+            className="h-11 rounded-full cursor-pointer"
+            alt=""
+          />
 
           <div className="flex-col flex ml-2 -mt-[1px]  ">
             <span className="hover:underline cursor-pointer inline-block -mb-[3px] font-semibold">
               {post?.username}
             </span>
-            <div className="flex items-center  gap-1 text-[#757578]">
+            <div className="flex items-center cursor-default gap-1 text-[#757578]">
               <Moment
                 fromNow
                 //   format="hh:mm"
@@ -58,26 +100,29 @@ function Post({ post }) {
       <div className="p-2 flex items-center justify-between">
         <div className="flex  items-center icon">
           <div
-            onClick={() => setLiked(!liked)}
+            onClick={() => {
+              setLiked(!liked);
+              likePost();
+            }}
             className="px-2 cursor-pointer active:scale-90   active:skew-x-12"
           >
             {liked ? (
               <Icon
                 icon="solar:chat-round-like-bold"
-                className="text-[#0F87EB]"
+                className="text-fuchsia-500"
                 height={25}
               />
             ) : (
               <Icon
                 icon="solar:chat-round-like-linear"
-                className="text-[#0F87EB]"
+                className="text-fuchsia-500"
                 height={25}
               />
             )}
           </div>
-          {!likes.length > 0 && (
-            <div className=" text-[#65666A] hover:underline cursor-pointer">
-              {comments.length}
+          {likes.length > 0 && (
+            <div className=" text-[#65666A]  hover:underline cursor-pointer">
+              {likes.length}
             </div>
           )}
         </div>
@@ -99,7 +144,16 @@ function Post({ post }) {
             />
           )}
         </div>
-        <div className="flex items-center icon">
+        <div
+          className="flex items-center icon"
+          onClick={() => {
+            document.body.style.overflow = "hidden";
+            setPostStated(!postStated);
+            setKey(id);
+            setKeyId(id);
+            // console.log(id);
+          }}
+        >
           <Icon
             icon="mingcute:comment-fill"
             className="text-[#0F87EB]"

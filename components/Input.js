@@ -22,11 +22,11 @@ function Input() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState("");
   const [session, setSession] = useRecoilState(sessionState);
-  // console.log(selectedFile);
+  // console.log(session?.uid);
 
   const sendPost = async () => {
     const docRef = await addDoc(collection(db, "posts"), {
-      id: session?.apiKey,
+      id: session?.uid,
       username: session?.displayName,
       email: session?.email,
       userimage: session.photoURL,

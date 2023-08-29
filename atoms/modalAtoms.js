@@ -5,7 +5,11 @@ export const sessionState = atom({
   default: [],
 });
 
-// export const postState = atom({
-//   key: "postState",
-//   default: [],
-// });
+export const postState = atom({
+  key: "postState",
+  default: "",
+});
+export const postStateId = atom({
+  key: "postStateId",
+  default: "",
+});

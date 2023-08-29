@@ -5,11 +5,14 @@ import Sidebar from "../../components/Sidebar";
 import Feed from "../../components/Feed";
 import { useEffect, useState } from "react";
 import Login from "./login";
-import { sessionState } from "../../atoms/modalAtoms";
+import { postState, postStateId, sessionState } from "../../atoms/modalAtoms";
 import { useRecoilState } from "recoil";
+import PostState from "../../components/PostState";
 
 export default function Home() {
   const [session, setSession] = useRecoilState(sessionState);
+  let [key, setKey] = useRecoilState(postState);
+
   let token;
 
   // useEffect(() => {
@@ -19,6 +22,8 @@ export default function Home() {
   //     <Login />;
   //   }
   // }, []);
+  const [postStated, setPostStated] = useRecoilState(postState);
+  // const [key, setKey] = useRecoilState(postState);
 
   return (
     <div>
@@ -33,6 +38,7 @@ export default function Home() {
           <div className="flex max-w-[1523px] mx-auto min-h-screen ">
             <Sidebar />
             <Feed />
+            {postStated && <PostState id={key} />}
           </div>
         </main>
       )}
