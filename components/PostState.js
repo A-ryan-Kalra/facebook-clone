@@ -1,18 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
-import { postState } from "../atoms/modalAtoms";
+import { postState, sessionState } from "../atoms/modalAtoms";
 import Post from "./Post";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import Picker from "emoji-picker-react";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import Comments from "./Comments";
 
 export default function PostState({ id }) {
   const [postStated, setPostStated] = useRecoilState(postState);
   const [post, setPost] = useState([]);
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState("");
-
+  const textInput = useRef();
+  const [placeholder, setPlaceHolder] = useState(true);
+  const [session, setSession] = useRecoilState(sessionState);
+  const [comments, setComments] = useState([]);
   useEffect(
     () =>
       onSnapshot(doc(db, "posts", id), (snapshot) => {
@@ -22,7 +36,31 @@ export default function PostState({ id }) {
       }),
     [db]
   );
-  console.log(input);
+
+  async function sendComment() {
+    await addDoc(collection(db, "posts", id, "comments"), {
+      username: session.displayName,
+      usermail: session.email,
+      userimage: session.photoURL,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
+  }
+
+  useEffect(() => {
+    onSnapshot(
+      query(
+        collection(db, "posts", id, "comments"),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => {
+        setComments(snapshot.docs);
+      }
+    );
+  }, [db]);
+
+  // console.log(session);
+  // console.log(comments[0]?.data());
   return (
     <div
       className="inset-0 bottom-0 fixed bg-white/70"
@@ -33,53 +71,86 @@ export default function PostState({ id }) {
       }}
     >
       <div
-        className="relative top-[50%] translate-y-[-50%] max-w-[700px] max-h-[600px] m-auto rounded-lg border-2 shadow-lg  overflow-y-auto"
+        className="relative top-[50%] translate-y-[-50%] max-w-[700px] max-h-[600px] m-auto rounded-lg border-2 shadow-lg bg-white overflow-y-auto"
         onClick={(e) => {
           e.stopPropagation();
           setShowEmojis(false);
         }}
       >
         <div className="bg-[#FEFEFF] sticky top-0 h-16 text-center text-xl flex items-center justify-center font-semibold border-b-2 ">
-          {post.username} Post's
+          {post.username}'s Post
         </div>
-        <div className="-my-[10px]">{<Post post={post} id={id} />}</div>
-        <div className="bg-[#FEFEFF] sticky -bottom-1  h-16  text-xl flex items-center justify-between font-semibold ">
+
+        <div className="-my-[10px] ">{<Post post={post} id={id} />}</div>
+        {comments.length > 0 &&
+          comments?.map((comment, index) => (
+            <Comments comment={comment.data()} key={index} />
+          ))}
+        <div className="bg-[#FEFEFF] sticky bottom-0   break-words  text   p-2 max-h-[300px] outline-none text-sm  flex items-center justify-between font-semibold overflow-hidden">
           <div className="py-2 px-2 rounded-full  ">
             <img
-              src={post.userimage}
+              src={session.photoURL}
               className="rounded-full w-11 h-10 object-cover"
               alt=""
             />
           </div>
-          <div
-            className="w-full rounded-full py-2 "
-            onClick={(e) => e.stopPropagation()}
-          >
-            <input
-              type="text"
-              className="bg-[#F1F3F5] w-full h-10 rounded-full p-2 placeholder:text-sm font-normal placeholder:text-[#64666B] outline-none text-sm"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Write a comment"
-            />
-          </div>
-          <div className="flex p-1 items-center justify-between">
-            <FaceSmileIcon
-              className="h-7 text-[#91959A] cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowEmojis(!showEmojis);
+
+          <div className="w-full max-w-full max-h-[300px] break-words flex-col justify-between rounded-t-lg p-2  outline-none text-sm overflow-y-auto  py-2">
+            <div
+              className="bg-[#F1F3F5] relative font-normal break-words  rounded-t-lg p-2  outline-none text-sm "
+              contentEditable="true"
+              ref={textInput}
+              onInput={(e) => {
+                setInput(e.target.textContent);
               }}
-            />
+              onFocus={() => setPlaceHolder(false)}
+              onBlur={() => setPlaceHolder(input.trim() === "")}
+            >
+              {placeholder && (
+                <p className="bg-black absolute top-2 left-1 outline-none h-0 text-start text-[16px] font-normal text-[#64666B]">
+                  Write a comment...
+                </p>
+              )}
+            </div>
+            <div
+              className="bg-[#F1F3F5] h-10 rounded-b-lg  "
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-2  items-end flex justify-between h-full ">
+                <FaceSmileIcon
+                  className="h-6 text-[#91959A] cursor-pointer"
+                  onClick={(e) => {
+                    setShowEmojis(!showEmojis);
+                  }}
+                />
+                <button
+                  disabled={!input.trim()}
+                  className=" text-[#0E87EB] active:scale-90 disabled:text-[#91959A] cursor-pointer"
+                  onClick={() => {
+                    sendComment();
+                    // setPostStated(!postStated);
+                    textInput.current.textContent = "";
+                    setPlaceHolder(true);
+                    setInput("");
+                  }}
+                >
+                  <PaperAirplaneIcon className="h-6" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+
         {showEmojis && (
           <div
             className={`absolute  top-[200px]  right-[30px] `}
             onClick={(e) => e.stopPropagation()}
           >
             <Picker
-              onEmojiClick={(e) => setInput(input + e.emoji)}
+              onEmojiClick={(e) => {
+                setInput(input + e.emoji);
+                textInput.current.textContent = input + e.emoji;
+              }}
               theme="dark"
               emojiStyle="google"
               height={360}

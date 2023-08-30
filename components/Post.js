@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import PostState from "./PostState";
+import { Router, useRouter } from "next/router";
 
 function Post({ post, id }) {
   const [session, setSession] = useRecoilState(sessionState);
@@ -26,6 +27,14 @@ function Post({ post, id }) {
   const [postStated, setPostStated] = useRecoilState(postState);
   const [key, setKey] = useRecoilState(postState);
   const [keyId, setKeyId] = useRecoilState(postStateId);
+  const router = useRouter();
+
+  useEffect(() => {
+    onSnapshot(collection(db, "posts", id, "comments"), (snapshot) => {
+      setComments(snapshot.docs);
+    });
+  }, [db, id]);
+
   useEffect(
     () =>
       onSnapshot(collection(db, "posts", id, "likes"), (snapshot) => {
@@ -40,7 +49,12 @@ function Post({ post, id }) {
     () => setLiked(likes.findIndex((like) => like.id === session.uid) !== -1),
     [likes]
   );
+
   // console.log(liked);
+  // async function deleted(){
+  //   await deleteDoc(doc(db,'posts',id))
+  // }
+  // console.log(session.uid);
   async function likePost() {
     if (liked) {
       await deleteDoc(doc(db, "posts", id, "likes", session.uid));
@@ -126,24 +140,32 @@ function Post({ post, id }) {
             </div>
           )}
         </div>
-        <div
-          className="cursor-pointer p-1 hover:bg-[#EA4947] hover:bg-opacity-30 rounded-full "
-          onClick={() => setDeleted(!deleted)}
-        >
-          {deleted ? (
-            <Icon
-              icon="mdi:delete-empty"
-              height={25}
-              className=" text-[#EA4947] rounded-full "
-            />
-          ) : (
-            <Icon
-              icon="mdi:delete-empty-outline"
-              height={25}
-              className="  rounded-full "
-            />
-          )}
-        </div>
+        {session.uid === post.id && (
+          <div
+            className="cursor-pointer p-1 hover:bg-[#EA4947] hover:bg-opacity-30 rounded-full "
+            onClick={async () => {
+              setDeleted(!deleted);
+              await deleteDoc(doc(db, "posts", id));
+
+              // router.reload();
+            }}
+          >
+            {deleted ? (
+              <Icon
+                icon="mdi:delete-empty"
+                height={25}
+                className=" text-[#EA4947] rounded-full "
+              />
+            ) : (
+              <Icon
+                icon="mdi:delete-empty-outline"
+                height={25}
+                className="  rounded-full "
+              />
+            )}
+          </div>
+        )}
+
         <div
           className="flex items-center icon"
           onClick={() => {
@@ -159,7 +181,7 @@ function Post({ post, id }) {
             className="text-[#0F87EB]"
             height={25}
           />
-          {!comments.length > 0 && (
+          {comments.length > 0 && (
             <div className="px-2 text-[#65666A] hover:underline cursor-pointer">
               {comments.length}
             </div>

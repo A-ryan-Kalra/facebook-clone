@@ -13,11 +13,11 @@ function Navbar() {
 
   const icons = ["gg:menu-grid-o", "fe:messanger", "solar:bell-bold"];
   let auth = getAuth(app);
-  const [clickedStates, setClickedStates] = useState(icons.map(() => false));
+  const [clickedStates, setClickedStates] = useState(icons?.map(() => false));
 
   // const checking = (e, id) => {
   //   var arr = [];
-  //   clickedStates.map((check, index) => {
+  //   clickedStates?.map((check, index) => {
   //     if (index === id) {
   //       return (arr[index] = !check);
   //     } else {
@@ -29,7 +29,7 @@ function Navbar() {
   const [session, setSession] = useRecoilState(sessionState);
 
   return (
-    <nav className=" sticky top-0 h-14  bg-[#FFFFFF]  mx-auto shadow-md">
+    <nav className=" sticky -top-1 h-14  bg-[#FFFFFF]  mx-auto shadow-md">
       <div className="flex items-center justify-between">
         <div className="py-2 px-4 flex">
           <Link
@@ -49,7 +49,7 @@ function Navbar() {
           </div>
         </div>
         <div className="flex  space-x-2 px-2">
-          {icons.map((icon, index) => (
+          {icons?.map((icon, index) => (
             <NavIcons
               key={index}
               // clicked={clickedStates[index]}

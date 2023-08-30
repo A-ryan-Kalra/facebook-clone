@@ -7,7 +7,7 @@ export const sessionState = atom({
 
 export const postState = atom({
   key: "postState",
-  default: "",
+  default: false,
 });
 export const postStateId = atom({
   key: "postStateId",

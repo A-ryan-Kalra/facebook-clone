@@ -34,6 +34,9 @@ function Input() {
       timestamp: serverTimestamp(),
     });
     // console.log(docRef);
+    await updateDoc(doc(db, "posts", docRef.id), {
+      uid: docRef.id,
+    });
     const imageRef = ref(storage, `posts/${docRef.id}/image`);
     if (selectedFile) {
       await uploadString(imageRef, selectedFile, "data_url").then(
