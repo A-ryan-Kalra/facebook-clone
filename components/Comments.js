@@ -2,7 +2,7 @@ import React from "react";
 import Moment from "react-moment";
 
 function Comments({ comment }) {
-  console.log(comment);
+  // console.log(comment);
   return (
     <div className="p-3 flex items-center">
       <div className="cursor-pointer ">

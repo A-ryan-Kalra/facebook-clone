@@ -49,6 +49,7 @@ function Login() {
         setSession(response.user);
         sessionStorage.setItem("Token", JSON.stringify(response.user));
         router.push("/");
+        router.reload();
       })
       .catch((err) => {
         alert(err);

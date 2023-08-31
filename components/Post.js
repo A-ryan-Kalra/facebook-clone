@@ -60,7 +60,7 @@ function Post({ post, id }) {
       await deleteDoc(doc(db, "posts", id, "likes", session.uid));
     } else {
       await setDoc(doc(db, "posts", id, "likes", session.uid), {
-        username: session.displayName,
+        username: session?.displayName ? session?.displayName : session.email,
         usermail: session.email,
       });
     }
@@ -105,11 +105,21 @@ function Post({ post, id }) {
       </div>
       <div>
         <p className="px-3  -mt-1 py-2">{post?.text}</p>
-        <img
-          src={post?.img}
-          className="max-h-[400px]  w-full object-cover"
-          alt=""
-        />
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            document.body.style.overflow = "hidden";
+            setPostStated(!postStated);
+            setKey(id);
+            setKeyId(id);
+          }}
+        >
+          <img
+            src={post?.img}
+            className="max-h-[400px]  w-full object-cover"
+            alt=""
+          />
+        </div>
       </div>
       <div className="p-2 flex items-center justify-between">
         <div className="flex  items-center icon">

@@ -39,9 +39,9 @@ export default function PostState({ id }) {
 
   async function sendComment() {
     await addDoc(collection(db, "posts", id, "comments"), {
-      username: session.displayName,
+      username: session?.displayName ? session?.displayName : session.email,
       usermail: session.email,
-      userimage: session.photoURL,
+      userimage: session?.photoURL ? session?.photoURL : "/facebook.png",
       text: input,
       timestamp: serverTimestamp(),
     });
@@ -51,7 +51,7 @@ export default function PostState({ id }) {
     onSnapshot(
       query(
         collection(db, "posts", id, "comments"),
-        orderBy("timestamp", "desc")
+        orderBy("timestamp", "asc")
       ),
       (snapshot) => {
         setComments(snapshot.docs);
@@ -89,7 +89,7 @@ export default function PostState({ id }) {
         <div className="bg-[#FEFEFF] sticky bottom-0   break-words  text   p-2 max-h-[300px] outline-none text-sm  flex items-center justify-between font-semibold overflow-hidden">
           <div className="py-2 px-2 rounded-full  ">
             <img
-              src={session.photoURL}
+              src={session.photoURL ? session.photoURL : "/facebook.png"}
               className="rounded-full w-11 h-10 object-cover"
               alt=""
             />

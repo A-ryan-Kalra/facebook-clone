@@ -22,14 +22,14 @@ function Input() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState("");
   const [session, setSession] = useRecoilState(sessionState);
-  // console.log(session?.uid);
+  console.log(session);
 
   const sendPost = async () => {
     const docRef = await addDoc(collection(db, "posts"), {
       id: session?.uid,
-      username: session?.displayName,
+      username: session?.displayName ? session?.displayName : session.email,
       email: session?.email,
-      userimage: session.photoURL,
+      userimage: session?.photoURL ? session?.photoURL : "/facebook.png",
       text: input,
       timestamp: serverTimestamp(),
     });
