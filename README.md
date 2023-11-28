@@ -3,6 +3,17 @@
 
 <h2>About</h2>
 Facebook clone built in Next.js + Javascript + Tailwind CSS using Cloud Firestore and Storage
+</br>
+
+<h2>Credentials</h2>
+<ul>
+<li>You can freely check out my project with given email id and password.
+</br>
+
+->Email: abc@abc.com\
+->Password: abc123
+
+</ul>
 
 </br>
 <h1>Features</h1>

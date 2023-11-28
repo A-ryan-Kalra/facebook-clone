@@ -4,6 +4,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { db } from "../../firebaseConfig";
 import { sessionState } from "../../atoms/modalAtoms";
@@ -18,6 +19,20 @@ function Login() {
   const [data, setData] = useState({});
   const router = useRouter();
   const [buttonColor, setButtonColor] = useState("#1777F2");
+
+  function signInwithEmailAndPassword12(e) {
+    e.preventDefault();
+
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((response) => {
+        setSession(response.user);
+        sessionStorage.setItem("Token", JSON.stringify(response.user));
+        router.push("/");
+        router.reload();
+      })
+      .catch((err) => alert(err));
+  }
+
   function signIn() {
     signInWithPopup(auth, GoogleProvider)
       .then((response) => {
@@ -102,14 +117,17 @@ function Login() {
                 type="submit"
                 style={{ backgroundColor: buttonColor }}
                 className={` border-2 h-12 rounded-lg text-center outline-none focus:ring-2 focus:ring-blue-400 text-lg font-semibold text-[#FFFEFE] cursor-pointer checked:bg-black `}
-                onKeyDown={(event) => handleKeyDown(event)}
-                onClick={(e) => signUp(e)}
                 value={"Log in"}
+                onClick={(e) => signInwithEmailAndPassword12(e)}
               ></input>
             </form>
 
             <hr className="mt-4  border-gray-300" />
-            <button className="bg-[#63B82C] hover:bg-[#559e24] text-[12px]  whitespace-nowrap border-2 h-12 w-6/12 mx-auto rounded-full text-center lg:text-[16px] font-semibold text-[#FFFEFE]">
+            <button
+              className="bg-[#63B82C] hover:bg-[#559e24] text-[12px]  whitespace-nowrap border-2 h-12 w-6/12 mx-auto rounded-full text-center lg:text-[16px] font-semibold text-[#FFFEFE]"
+              // onKeyDown={(event) => handleKeyDown(event)}
+              onClick={(e) => signUp(e)}
+            >
               Create a new account
             </button>
             <button

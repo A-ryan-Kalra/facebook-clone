@@ -22,7 +22,7 @@ function Input() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [input, setInput] = useState("");
   const [session, setSession] = useRecoilState(sessionState);
-  console.log(session);
+  // console.log(session);
 
   const sendPost = async () => {
     const docRef = await addDoc(collection(db, "posts"), {
