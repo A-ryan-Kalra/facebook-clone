@@ -87,7 +87,7 @@ function Login() {
               <input
                 type="email"
                 className="border-2 h-12 rounded-lg px-5 outline-none focus:ring-1 text-[17px] focus:placeholder-[#CFD0D6]"
-                placeholder="Email address  or phone number"
+                placeholder=" any email or phone number"
                 name="email"
                 onChange={(e) => inputHandler(e)}
               />
@@ -107,9 +107,7 @@ function Login() {
                 value={"Log in"}
               ></input>
             </form>
-            <p className="text-center text-[#257BF2] text-sm -tracking-wide underline cursor-pointer">
-              Forgotten password?
-            </p>
+
             <hr className="mt-4  border-gray-300" />
             <button className="bg-[#63B82C] hover:bg-[#559e24] text-[12px]  whitespace-nowrap border-2 h-12 w-6/12 mx-auto rounded-full text-center lg:text-[16px] font-semibold text-[#FFFEFE]">
               Create a new account
